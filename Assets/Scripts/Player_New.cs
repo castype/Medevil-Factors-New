@@ -203,9 +203,8 @@ public class Player_New : Character
 		}
 		if (Input.GetKeyDown (KeyCode.LeftShift) ) 
 		{
-            if (MyRigidbody.velocity.x > 0)
+            if (MyRigidbody.velocity.x != 0)
 			MyAnimator.SetTrigger ("run");
-            //isRunning = true;
 		}
 
 		if (Input.GetKeyDown (KeyCode.R)) 
