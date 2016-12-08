@@ -277,12 +277,12 @@ public class Player_New : Character
 	{
 			if (facingRight)
 			{
-				GameObject tmp = (GameObject)Instantiate (arrowPrefab, transform.position, Quaternion.identity);
+				GameObject tmp = (GameObject)Instantiate (arrowPrefab, transform.position, Quaternion.Euler(new Vector3(0,0,-90)));
 				tmp.GetComponent<Arrow> ().Initialize (Vector2.right);
 			}
 			else 
 			{
-				GameObject tmp = (GameObject)Instantiate (arrowPrefab, transform.position, Quaternion.identity);
+                GameObject tmp = (GameObject)Instantiate(arrowPrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 90)));
 				tmp.GetComponent<Arrow> ().Initialize (Vector2.left);
 			}
 
@@ -391,6 +391,14 @@ public class Player_New : Character
             transform.parent = other.transform;
         }
 	}
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.transform.tag == "SwingingPlatform")
+        {
+            transform.parent = null;
+        }
+    }
 
 	public override void OnTriggerEnter2D(Collider2D other)
 	{
