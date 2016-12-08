@@ -386,6 +386,10 @@ public class Player_New : Character
 			GameManager.Instance.CollectedCoins++;
 			Destroy (other.gameObject);
 		}
+        if (other.transform.tag == "SwingingPlatform")
+        {
+            transform.parent = other.transform;
+        }
 	}
 
 	public override void OnTriggerEnter2D(Collider2D other)
