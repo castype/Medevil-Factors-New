@@ -68,6 +68,14 @@ public class Player_New : Character
 
 	public bool OnGround { get; set; }
 
+    private bool launch = false;
+
+    [SerializeField]
+    private float catapultLaunchX;
+
+    [SerializeField]
+    private float catapultLaunchY;
+
 	public static Player_New Instance
 	{
 		get
@@ -135,7 +143,7 @@ public class Player_New : Character
 
 			OnGround = IsGrounded ();
 
-			if (move) 
+			if (move || launch) 
 			{
 				this.btnHorizontal = Mathf.Lerp (btnHorizontal, direction, Time.deltaTime * 2);
 				Flip (direction);
@@ -390,6 +398,9 @@ public class Player_New : Character
         {
             transform.parent = other.transform;
         }
+ 
+        launch = false;
+        
 	}
 
     private void OnCollisionExit2D(Collision2D other)
@@ -398,6 +409,12 @@ public class Player_New : Character
         {
             transform.parent = null;
         }
+                if (other.transform.tag == "Catapult")
+        {
+            LaunchPlayer();
+        }
+
+        
     }
 
 	public override void OnTriggerEnter2D(Collider2D other)
@@ -417,5 +434,11 @@ public class Player_New : Character
 			useable = null;
 		}
 	}
+
+    public void LaunchPlayer()
+    {
+        launch = true;
+        MyRigidbody.velocity = new Vector2(catapultLaunchX, catapultLaunchY);
+    }
 
 }
