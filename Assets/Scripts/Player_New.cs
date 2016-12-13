@@ -17,7 +17,7 @@ public class Player_New : Character
 
 	private IUseable useable;
 
-    public bool isRunning { get; set; }
+	public bool isRunning { get; set; }
 		
 	[SerializeField]
 	private Transform[] groundPoints;
@@ -68,13 +68,15 @@ public class Player_New : Character
 
 	public bool OnGround { get; set; }
 
-    private bool launch = false;
+	private bool launch = false;
 
-    [SerializeField]
-    private float catapultLaunchX;
+	[SerializeField]
+	private float catapultLaunchX;
 
-    [SerializeField]
-    private float catapultLaunchY;
+	[SerializeField]
+	private float catapultLaunchY;
+
+
 
 	public static Player_New Instance
 	{
@@ -131,8 +133,11 @@ public class Player_New : Character
 			HandleInput ();
 		}
 
+
 	}
 	
+
+
 	// Update is called once per frame
 	void FixedUpdate()
 	{
@@ -171,14 +176,14 @@ public class Player_New : Character
 	private void HandleMovement(float horizontal, float vertical)
 	{
 
-        if (isRunning)
-        {
-            movementSpeed = 5f;
-        }
-        else
-        {
-            movementSpeed = 2f;
-        }
+		if (isRunning)
+		{
+			movementSpeed = 5f;
+		}
+		else
+		{
+			movementSpeed = 2f;
+		}
 
 		if (IsFalling) 
 		{
@@ -211,7 +216,7 @@ public class Player_New : Character
 		}
 		if (Input.GetKeyDown (KeyCode.LeftShift) ) 
 		{
-            if (MyRigidbody.velocity.x != 0)
+			if (MyRigidbody.velocity.x != 0)
 			MyAnimator.SetTrigger ("run");
 		}
 
@@ -251,20 +256,20 @@ public class Player_New : Character
 	{
 		if (MyRigidbody.velocity.y == 0) 
 		{
-            //foreach (Transform point in groundPoints) 
-            //{
-            //    Collider2D[] colliders = Physics2D.OverlapCircleAll (point.position, groundRadius, whatIsGround);
+			//foreach (Transform point in groundPoints) 
+			//{
+			//    Collider2D[] colliders = Physics2D.OverlapCircleAll (point.position, groundRadius, whatIsGround);
 
-            //    for (int i = 0; i < colliders.Length; i++) 
-            //    {
-            //        if (colliders [i].gameObject != gameObject) 
-            //        {
-            //            return true;
-            //        }
-            //    }
+			//    for (int i = 0; i < colliders.Length; i++) 
+			//    {
+			//        if (colliders [i].gameObject != gameObject) 
+			//        {
+			//            return true;
+			//        }
+			//    }
 
-            //}
-            return true;
+			//}
+			return true;
 		}
 		return false;
 	}
@@ -394,28 +399,30 @@ public class Player_New : Character
 			GameManager.Instance.CollectedCoins++;
 			Destroy (other.gameObject);
 		}
-        if (other.transform.tag == "SwingingPlatform")
-        {
-            transform.parent = other.transform;
-        }
+		if (other.transform.tag == "SwingingPlatform")
+		{
+			transform.parent = other.transform;
+		}
  
-        launch = false;
-        
+		launch = false;
+		
 	}
 
-    private void OnCollisionExit2D(Collision2D other)
-    {
-        if (other.transform.tag == "SwingingPlatform")
-        {
-            transform.parent = null;
-        }
-                if (other.transform.tag == "Catapult")
-        {
-            LaunchPlayer();
-        }
+	private void OnCollisionExit2D(Collision2D other)
+	{
+		if (other.transform.tag == "SwingingPlatform")
+		{
+			transform.parent = null;
+            transform.rotation = Quaternion.identity;
 
-        
-    }
+		}
+				if (other.transform.tag == "Catapult")
+		{
+			LaunchPlayer();
+		}
+
+		
+	}
 
 	public override void OnTriggerEnter2D(Collider2D other)
 	{
@@ -423,6 +430,12 @@ public class Player_New : Character
 		{
 			useable = other.GetComponent<IUseable> ();
 		}
+        if (other.tag == "SignTrigger")
+        {
+            GameObject sign = GameObject.Find("MathProblemSign");
+            var x = sign.GetComponent<Rigidbody2D>();
+            x.constraints = RigidbodyConstraints2D.None;
+        }
 
 		base.OnTriggerEnter2D (other);
 	}
@@ -435,10 +448,11 @@ public class Player_New : Character
 		}
 	}
 
-    public void LaunchPlayer()
-    {
-        launch = true;
-        MyRigidbody.velocity = new Vector2(catapultLaunchX, catapultLaunchY);
-    }
+	public void LaunchPlayer()
+	{
+		launch = true;
+		MyRigidbody.velocity = new Vector2(catapultLaunchX, catapultLaunchY);
+		MyAnimator.SetBool("land", true);
+	}
 
 }
