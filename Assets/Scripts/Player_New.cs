@@ -80,6 +80,14 @@ public class Player_New : Character
     [SerializeField]
     public bool TakeOff;
 
+    Transform arrowPoint;
+
+    [SerializeField]
+    private float maxArrowDegree;
+
+    [SerializeField]
+    private int minArrowDegree;
+
 
 
 	public static Player_New Instance
@@ -127,6 +135,11 @@ public class Player_New : Character
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		MyRigidbody = GetComponent<Rigidbody2D>();
 	}
+
+    void Awake() {
+        arrowPoint = transform.FindChild("ArrowPos");
+
+    }
 
 	void Update()
 	{
@@ -270,62 +283,55 @@ public class Player_New : Character
 		}
 	}
 
+
 	public void ShootArrow(int value)
 	{
 
-		//Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		//Debug.Log(ray);
+        //calculate the angles between arrow position and mouse position
+        var mousePos = Input.mousePosition;
+        mousePos.z = 10; // select distance = 10 units from the camera
+        Vector2 mousePosition = new Vector2(Camera.main.ScreenToWorldPoint(mousePos).x, Camera.main.ScreenToWorldPoint(mousePos).y);
+        Vector2 arrowPointPosition = new Vector2(arrowPoint.position.x, arrowPoint.position.y);
 
-		//if (Physics.Raycast(ray))
-		//    Instantiate(arrowPrefab, transform.position, transform.rotation);
+        //Debug.DrawLine(arrowPointPosition, mousePosition);
+
+        Vector2 pointDiff = mousePosition - arrowPointPosition;
+        float arrowDegree = FindDegree(pointDiff.x, pointDiff.y);
+
+        //account for the difference between camera and arrow point
+        Vector3 sp = Camera.main.WorldToScreenPoint(transform.position + new Vector3(1.05f, 0.5f, 0));
+        Vector3 angle = (Input.mousePosition - sp).normalized;
+
+
 
         if (facingRight)
         {
-            //GameObject tmp = (GameObject)Instantiate (arrowPrefab, arrowPos.position, Quaternion.Euler(new Vector3(0,0,-90)));
+            if (arrowDegree < maxArrowDegree && arrowDegree > minArrowDegree)
+            {
+                Quaternion rotation = Quaternion.Euler(new Vector3(0, 0, (-arrowDegree)));
+                GameObject tmp = (GameObject)Instantiate(arrowPrefab, arrowPos.position, rotation);
+                tmp.GetComponent<Arrow>().Initialize(angle);
+            }
+            else
+            {
+                GameObject tmp2 = (GameObject)Instantiate(arrowPrefab, arrowPos.position, Quaternion.Euler(new Vector3(0, 0, -90)));
+                tmp2.GetComponent<Arrow>().Initialize(Vector2.right);
+            }
 
-            Quaternion rotation = Quaternion.Euler(0, 0, Mathf.Atan2(-10, 2.5f) * Mathf.Rad2Deg);
-            GameObject tmp = (GameObject)Instantiate(arrowPrefab, arrowPos.position, rotation);
-
-            tmp.GetComponent<Arrow>().Initialize(new Vector2(1, 0.30f));
         }
         else
         {
-            GameObject tmp = (GameObject)Instantiate(arrowPrefab, arrowPos.position, Quaternion.Euler(new Vector3(0, 0, 90)));
-            tmp.GetComponent<Arrow>().Initialize(Vector2.left);
+
+            GameObject tmp2 = (GameObject)Instantiate(arrowPrefab, arrowPos.position, Quaternion.Euler(new Vector3(0, 0, 90)));
+            tmp2.GetComponent<Arrow>().Initialize(Vector2.left);
+
         }
 
-		//float XvelocityVector = (Camera.main.ScreenToWorldPoint(Input.mousePosition).x) - (transform.position.x);
-		//float YvelocityVector = (Camera.main.ScreenToWorldPoint(Input.mousePosition).y) - (transform.position.y);
-		//float VelocityVectorCte = YvelocityVector / XvelocityVector;
 
-		// If the fire button is pressed...
-
-
-			// If the player is facing right...
-			//if (true)
-			//{
-			//    // ... instantiate the rocket facing right and set it's velocity to the right. 
-			//    Rigidbody2D bulletInstance = Instantiate(arrowPrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0))) as Rigidbody2D;
-			//    Vector2 Result = new Vector2(XvelocityVector, YvelocityVector);
-			//    //bulletInstance.velocity = Result;
-			//}
-			//else
-			//{
-			//    // Otherwise instantiate the rocket facing left and set it's velocity to the left.
-			//    Rigidbody2D bulletInstance = Instantiate(rocket, transform.position, Quaternion.Euler(new Vector3(0, 0, 180f))) as Rigidbody2D;
-			//    Result = new Vector2(XvelocityVector, YvelocityVector);
-			//    bulletInstance.velocity = Result;
-			//}
 		
 
 	}
 
-	//public IEnumerator ShootArrow()
-	//{	
-		//GameObject arrow = (GameObject) Instantiate (arrowPrefab, transform.position, Quaternion.identity);
-
-		//yield return new WaitForSeconds (0.5);
-	//}
 
 	private IEnumerator IndicateImmortal()
 	{
@@ -504,4 +510,11 @@ public class Player_New : Character
         MyAnimator.SetBool("land", true);
 	}
 
+    public static float FindDegree(float x, float y)
+    {
+        float value = (float)((Mathf.Atan2(x, y) / Math.PI) * 180f);
+        if (value < 0) value += 360f;
+
+        return value;
+    }
 }
