@@ -17,23 +17,18 @@ public class SignTrigger : MonoBehaviour {
     {
         if (other.tag == "Player")
         {
-            var t = 7;
+
         }
 
         if (other.gameObject.tag == "Player" || other.gameObject.tag == "Enemy")
         {
-            var t3 = 7;
+
         }
         
     }
 
     public void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Player")
-        {
-            var t = 7;
-        }
-
 
     }
 
@@ -43,7 +38,7 @@ public class SignTrigger : MonoBehaviour {
     {
         if (other.tag == "Player")
         {
-            var t = 7;
+
         }
 
 

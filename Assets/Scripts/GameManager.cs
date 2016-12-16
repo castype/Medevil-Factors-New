@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	private Text coinTxt;
 
+    [SerializeField]
+    private Text TimerText;
+
 	private int collectedCoins;
 
 	public static GameManager Instance
@@ -52,7 +55,7 @@ public class GameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+        //TimerText.text = "TIME 00:00";
 	}
 	
 	// Update is called once per frame

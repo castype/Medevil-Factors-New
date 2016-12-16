@@ -18,6 +18,7 @@ public class JumpBehavior : StateMachineBehaviour {
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		Player_New.Instance.Jump = false;
+        Player_New.Instance.TakeOff = false;
 		animator.ResetTrigger ("reset");
 	}
 

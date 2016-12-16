@@ -14,7 +14,7 @@ public class GroundEdgeCollider : MonoBehaviour
         animator.SetBool("land", false);
         animator.ResetTrigger("jump");
         animator.ResetTrigger("reset");
-        
+        player.TakeOff = false;
         player.Jump = false;
         player.OnGround = true;
 

@@ -66,6 +66,7 @@ public class Player_New : Character
 
 	public bool Run { get; set; }
 
+    [SerializeField]
 	public bool OnGround { get; set; }
 
 	private bool launch = false;
@@ -75,6 +76,9 @@ public class Player_New : Character
 
 	[SerializeField]
 	private float catapultLaunchY;
+
+    [SerializeField]
+    public bool TakeOff;
 
 
 
@@ -108,7 +112,7 @@ public class Player_New : Character
 	{
 		get 
 		{
-			return MyRigidbody.velocity.y < -3;
+			return MyRigidbody.velocity.y > 0;
 		}
 	}
 
@@ -116,6 +120,8 @@ public class Player_New : Character
 	public override void Start ()
 	{
 		base.Start();
+        OnGround = false;
+        TakeOff = false;
 		OnLadder = false;
 		startPos = transform.position;
 		spriteRenderer = GetComponent<SpriteRenderer> ();
@@ -145,8 +151,6 @@ public class Player_New : Character
 		{
 			float horizontal = Input.GetAxis("Horizontal");
 			float vertical = Input.GetAxis("Vertical");
-
-			OnGround = IsGrounded ();
 
 			if (move || launch) 
 			{
@@ -194,9 +198,10 @@ public class Player_New : Character
 		{
 			MyRigidbody.velocity = new Vector2 (horizontal * movementSpeed, MyRigidbody.velocity.y);
 		}
-		if (Jump && MyRigidbody.velocity.y == 0 )
+		if (Jump && OnGround && !TakeOff )
 		{
 			MyRigidbody.AddForce(new Vector2(0, jumpForce));
+            TakeOff = true;
 		}
 		if (OnLadder)
 		{
@@ -209,7 +214,7 @@ public class Player_New : Character
 
 	private void HandleInput()
 	{
-		if (Input.GetKeyDown (KeyCode.Space) && !OnLadder && !IsFalling) 
+		if (Input.GetKeyDown (KeyCode.Space) && !OnLadder && OnGround) 
 		{
 			MyAnimator.SetTrigger ("jump");
 			Jump = true;
@@ -252,27 +257,6 @@ public class Player_New : Character
 		}
 	}
 
-	private bool IsGrounded()
-	{
-		if (MyRigidbody.velocity.y == 0) 
-		{
-			//foreach (Transform point in groundPoints) 
-			//{
-			//    Collider2D[] colliders = Physics2D.OverlapCircleAll (point.position, groundRadius, whatIsGround);
-
-			//    for (int i = 0; i < colliders.Length; i++) 
-			//    {
-			//        if (colliders [i].gameObject != gameObject) 
-			//        {
-			//            return true;
-			//        }
-			//    }
-
-			//}
-			return true;
-		}
-		return false;
-	}
 
 	private void HandleLayers()
 	{
@@ -288,16 +272,51 @@ public class Player_New : Character
 
 	public void ShootArrow(int value)
 	{
-			if (facingRight)
-			{
-				GameObject tmp = (GameObject)Instantiate (arrowPrefab, transform.position, Quaternion.Euler(new Vector3(0,0,-90)));
-				tmp.GetComponent<Arrow> ().Initialize (Vector2.right);
-			}
-			else 
-			{
-                GameObject tmp = (GameObject)Instantiate(arrowPrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 90)));
-				tmp.GetComponent<Arrow> ().Initialize (Vector2.left);
-			}
+
+		//Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		//Debug.Log(ray);
+
+		//if (Physics.Raycast(ray))
+		//    Instantiate(arrowPrefab, transform.position, transform.rotation);
+
+        if (facingRight)
+        {
+            //GameObject tmp = (GameObject)Instantiate (arrowPrefab, arrowPos.position, Quaternion.Euler(new Vector3(0,0,-90)));
+
+            Quaternion rotation = Quaternion.Euler(0, 0, Mathf.Atan2(-10, 2.5f) * Mathf.Rad2Deg);
+            GameObject tmp = (GameObject)Instantiate(arrowPrefab, arrowPos.position, rotation);
+
+            tmp.GetComponent<Arrow>().Initialize(new Vector2(1, 0.30f));
+        }
+        else
+        {
+            GameObject tmp = (GameObject)Instantiate(arrowPrefab, arrowPos.position, Quaternion.Euler(new Vector3(0, 0, 90)));
+            tmp.GetComponent<Arrow>().Initialize(Vector2.left);
+        }
+
+		//float XvelocityVector = (Camera.main.ScreenToWorldPoint(Input.mousePosition).x) - (transform.position.x);
+		//float YvelocityVector = (Camera.main.ScreenToWorldPoint(Input.mousePosition).y) - (transform.position.y);
+		//float VelocityVectorCte = YvelocityVector / XvelocityVector;
+
+		// If the fire button is pressed...
+
+
+			// If the player is facing right...
+			//if (true)
+			//{
+			//    // ... instantiate the rocket facing right and set it's velocity to the right. 
+			//    Rigidbody2D bulletInstance = Instantiate(arrowPrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0))) as Rigidbody2D;
+			//    Vector2 Result = new Vector2(XvelocityVector, YvelocityVector);
+			//    //bulletInstance.velocity = Result;
+			//}
+			//else
+			//{
+			//    // Otherwise instantiate the rocket facing left and set it's velocity to the left.
+			//    Rigidbody2D bulletInstance = Instantiate(rocket, transform.position, Quaternion.Euler(new Vector3(0, 0, 180f))) as Rigidbody2D;
+			//    Result = new Vector2(XvelocityVector, YvelocityVector);
+			//    bulletInstance.velocity = Result;
+			//}
+		
 
 	}
 
@@ -402,11 +421,33 @@ public class Player_New : Character
 		if (other.transform.tag == "SwingingPlatform")
 		{
 			transform.parent = other.transform;
+            OnGround = true;
 		}
+        if (other.transform.tag == "Ground")
+        {
+            OnGround = true;
+        }
  
 		launch = false;
 		
 	}
+
+
+    private void OnCollisionStay2D(Collision2D other)
+    {
+
+        if (other.transform.tag == "SwingingPlatform")
+        {
+            OnGround = true;
+        }
+        if (other.transform.tag == "Ground")
+        {
+            OnGround = true;
+        }
+
+        launch = false;
+
+    }
 
 	private void OnCollisionExit2D(Collision2D other)
 	{
@@ -414,12 +455,19 @@ public class Player_New : Character
 		{
 			transform.parent = null;
             transform.rotation = Quaternion.identity;
+            OnGround = false;
 
 		}
-				if (other.transform.tag == "Catapult")
-		{
-			LaunchPlayer();
-		}
+        if (other.transform.tag == "Ground")
+        {
+            OnGround = false;
+        }
+        if (other.transform.name == "Catapult_Bowl")
+        {
+            LaunchPlayer();
+            MyAnimator.SetBool("land", true);
+        }
+
 
 		
 	}
@@ -452,7 +500,8 @@ public class Player_New : Character
 	{
 		launch = true;
 		MyRigidbody.velocity = new Vector2(catapultLaunchX, catapultLaunchY);
-		MyAnimator.SetBool("land", true);
+        gameObject.layer = 11;
+        MyAnimator.SetBool("land", true);
 	}
 
 }
