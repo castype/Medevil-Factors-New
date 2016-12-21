@@ -27,6 +27,7 @@ public class Arrow : MonoBehaviour
 	public void Initialize(Vector2 direction)
 	{
 		this.direction = direction;
+      
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
@@ -35,6 +36,29 @@ public class Arrow : MonoBehaviour
 		{
 			Destroy (other.gameObject);
 		}
+        if (other.gameObject.tag == "Shield")
+        {
+            Destroy(gameObject);
+            if (other.name == "shield1")
+            {
+               GameObject code = GameObject.Find("Code1");
+               SpriteRenderer sr = code.GetComponent<SpriteRenderer>();
+               sr.enabled = true;
+            }
+            if (other.name == "shield2")
+            {
+                GameObject code = GameObject.Find("Code2");
+                SpriteRenderer sr = code.GetComponent<SpriteRenderer>();
+                sr.enabled = true;
+            }
+            if (other.name == "shield3")
+            {
+                GameObject code = GameObject.Find("Code3");
+                SpriteRenderer sr = code.GetComponent<SpriteRenderer>();
+                sr.enabled = true;
+            }
+            
+        }
 	}
 
 	void OnBecameInvisible()
