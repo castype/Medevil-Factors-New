@@ -39,94 +39,25 @@ public class Arrow : MonoBehaviour
         if (other.gameObject.tag == "Shield")
         {
             Destroy(gameObject);
-
-            #region Equation1
-            if (Player_New.Instance.equationNum == 1)
+            if (other.name == "shield1")
             {
-                if (other.name == "shield-40")
-                {
-                    GameObject objl = GameObject.Find("Correct_Left");
-                    SpriteRenderer objlsr = objl.GetComponent<SpriteRenderer>();
-                    objlsr.enabled = true;
-
-                    GameObject code = GameObject.Find("Code1");
-                    SpriteRenderer sr = code.GetComponent<SpriteRenderer>();
-                    sr.enabled = true;
-                }
-                if (other.name == "shield-9")
-                {
-                    GameObject objm = GameObject.Find("Wrong_Middle");
-                    SpriteRenderer objmsr = objm.GetComponent<SpriteRenderer>();
-                    objmsr.enabled = true;
-                }
-                if (other.name == "shield-21")
-                {
-                    GameObject objr = GameObject.Find("Wrong_Right");
-                    SpriteRenderer objrsr = objr.GetComponent<SpriteRenderer>();
-                    objrsr.enabled = true;
-
-                }
+               GameObject code = GameObject.Find("Code1");
+               SpriteRenderer sr = code.GetComponent<SpriteRenderer>();
+               sr.enabled = true;
             }
-            #endregion
-
-            #region Equation2
-            if (Player_New.Instance.equationNum == 2)
+            if (other.name == "shield2")
             {
-                if (other.name == "shield-4")
-                {
-                    GameObject objr = GameObject.Find("Correct_Right");
-                    SpriteRenderer objrsr = objr.GetComponent<SpriteRenderer>();
-                    objrsr.enabled = true;
-
-                    GameObject code = GameObject.Find("Code2");
-                    SpriteRenderer sr = code.GetComponent<SpriteRenderer>();
-                    sr.enabled = true;
-                }
-                if (other.name == "shield-2")
-                {
-                    GameObject objl = GameObject.Find("Wrong_Left");
-                    SpriteRenderer objlsr = objl.GetComponent<SpriteRenderer>();
-                    objlsr.enabled = true;
-                }
-                if (other.name == "shield-16")
-                {
-                    GameObject objm = GameObject.Find("Wrong_Middle");
-                    SpriteRenderer objmsr = objm.GetComponent<SpriteRenderer>();
-                    objmsr.enabled = true;
-
-                }
+                GameObject code = GameObject.Find("Code2");
+                SpriteRenderer sr = code.GetComponent<SpriteRenderer>();
+                sr.enabled = true;
             }
-            #endregion
-
-            #region Equation3
-            if (Player_New.Instance.equationNum == 3)
+            if (other.name == "shield3")
             {
-                if (other.name == "shield-30")
-                {
-                    GameObject objr = GameObject.Find("Correct_Middle");
-                    SpriteRenderer objrsr = objr.GetComponent<SpriteRenderer>();
-                    objrsr.enabled = true;
-
-                    GameObject code = GameObject.Find("Code3");
-                    SpriteRenderer sr = code.GetComponent<SpriteRenderer>();
-                    sr.enabled = true;
-                }
-                if (other.name == "shield-23")
-                {
-                    GameObject objl = GameObject.Find("Wrong_Left");
-                    SpriteRenderer objlsr = objl.GetComponent<SpriteRenderer>();
-                    objlsr.enabled = true;
-                }
-                if (other.name == "shield-13")
-                {
-                    GameObject objm = GameObject.Find("Wrong_Right");
-                    SpriteRenderer objmsr = objm.GetComponent<SpriteRenderer>();
-                    objmsr.enabled = true;
-
-                }
+                GameObject code = GameObject.Find("Code3");
+                SpriteRenderer sr = code.GetComponent<SpriteRenderer>();
+                sr.enabled = true;
             }
-            #endregion
-
+            
         }
 	}
 
