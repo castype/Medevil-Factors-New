@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.SceneManagement;
 
 public delegate void DeadEventHandler();
 
@@ -66,6 +67,8 @@ public class Player_New : Character
 
 	public bool Run { get; set; }
 
+    public int equationNum { get; set; }
+
     [SerializeField]
 	public bool OnGround { get; set; }
 
@@ -120,7 +123,7 @@ public class Player_New : Character
 	{
 		get 
 		{
-			return MyRigidbody.velocity.y > 0;
+			return MyRigidbody.velocity.y > 1.0f;
 		}
 	}
 
@@ -134,6 +137,7 @@ public class Player_New : Character
 		startPos = transform.position;
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		MyRigidbody = GetComponent<Rigidbody2D>();
+        equationNum = 0;
 	}
 
     void Awake() {
@@ -489,6 +493,14 @@ public class Player_New : Character
             GameObject sign = GameObject.Find("MathProblemSign");
             var x = sign.GetComponent<Rigidbody2D>();
             x.constraints = RigidbodyConstraints2D.None;
+            equationNum = 1;
+        }
+        if (other.tag == "LevelEnd")
+        {
+            //use SceneManager when packaging for go live
+            //EditorSceneManager.LoadScene("EndlessRunner");
+            //SceneManager.LoadScene("EndlessRunner");
+
         }
 
 		base.OnTriggerEnter2D (other);
